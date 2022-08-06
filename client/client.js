@@ -35,11 +35,13 @@ app.use(function (request, response, next) {
 });
 
 var isUserValid = function (request) {
-    var user_id = request.body.user_id;
     if(request.cookies){
         var authToken = request.cookies['AuthToken'];
         if(authTokens && authToken){
-            if(user_id == authTokens[authToken]){
+            if(authTokens[authToken]){
+                if(!request.body)
+                    request.body = {}
+                request.body.user_id = authTokens[authToken]
                 return true;
             }
         }
@@ -108,7 +110,7 @@ app.get('/resource', (request, response) => {
     });
 })
 
-app.get('/resource/:parent_resource_id', (request, response) => {
+app.get('/resource/parent/:parent_resource_id', (request, response) => {
     client.getParentResources({  user_id: request.body.user_id, parent_resource_id : request.params.parent_resource_id  }, function(error, message) {
         response.send(message);
     });
@@ -144,8 +146,8 @@ app.put('/file/:resource_id', (request, response) => {
     });
 })
 
-app.put('/file/:source_resource_id/move/:destination_resource_id', (request, response) => {
-    client.moveResource({  user_id:  request.body.user_id,source_resource_id : request.params.source_resource_id, destination_resource_id : request.params.destination_resource_id , resource_id: request.body.resource_id}, function(error, message) {
+app.put('/file/:resource_id/move/:destination_resource_id', (request, response) => {
+    client.moveResource({  user_id:  request.body.user_id, destination_resource_id : request.params.destination_resource_id , resource_id: request.params.resource_id }, function(error, message) {
         response.send(message);
     });
 })

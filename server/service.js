@@ -215,7 +215,8 @@ function getParentResources(params, success) {
         var successCallBack = function( response) {
             var message={};
             message.status_code = constants.SUCCESS_CODE;
-            message.resource = response;
+            message.parent_resource_id = params.request.parent_resource_id;
+            message.resources = response;
             success(null,message);
         }
 
@@ -442,13 +443,25 @@ function moveResource(params, success) {
             console.log(error);
             success(null,message);
         }
-        var source_resource_id = params.request.source_resource_id;
+
         var destination_resource_id = params.request.destination_resource_id;
-        if(source_resource_id ==destination_resource_id){
-            failureCallBack (constants.ERROR_CODES.SAME_PARENT_ID);
-        }else{
-            connectDB.moveResource(destination_resource_id, params.request.resource_id , params.request.user_id , successCallBack , failureCallBack);
+        var resource_id = params.request.resource_id;
+        var user_id = params.request.user_id;
+
+        var checkResourceAndAdd = function(isParentResourceSame){
+            if(isParentResourceSame) {
+                failureCallBack (constants.ERROR_CODES.ALREADY_EXISTS);
+            }else{
+                connectDB.moveResource(destination_resource_id, resource_id  ,  user_id, successCallBack , failureCallBack);
+            }
         }
+
+        connectDB.getResource(user_id,resource_id,function(error, resource){
+            var isParentResourceSame = !error && resource && resource.parent_resource_id == destination_resource_id;
+            console.log(isParentResourceSame);
+            checkResourceAndAdd(isParentResourceSame);
+        });
+       
     } catch (exception) {
         console.log(exception);
     }

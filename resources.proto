@@ -109,7 +109,6 @@ message editResourceRequestObject{
 
 message MoveResourceRequestObject{
     int64 user_id = 1;
-    int64 source_resource_id = 2;
     int64 resource_id = 3;
     int64 destination_resource_id = 4;
 }
@@ -117,6 +116,5 @@ message ResourceList{
     repeated Resource resources = 1;
     int64 parent_resource_id = 2;
     int32 status_code = 3;
-    optional Resource resource = 4;
     optional ErrorMessage error_message=5;
 }
