@@ -13,4 +13,4 @@ var functions = {
     generateAuthToken  : generateAuthToken 
 }
 
-module.exports = functions; 
+module.exports = functions;
