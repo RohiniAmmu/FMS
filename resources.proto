@@ -1,0 +1,122 @@
+syntax="proto3";
+
+package resources;
+
+service FMSService {
+    rpc signup(CreateUserRequestObject) returns (User) {}
+    rpc validateUser(LoginDetail) returns (User) {}
+    rpc addResource(createResourceRequestObject) returns (ResourceObject) {}
+    rpc editResourceName(editResourceRequestObject) returns (ResourceObject){}
+    rpc getResource(ResourceRequestObject) returns (ResourceObject){}
+    rpc getResources(getUserResourceRequestObject) returns (ResourceList){}
+    rpc getParentResources (getParentResourcesRequestObject) returns (ResourceList){}
+    rpc getFileContent (ResourceRequestObject) returns (File){}
+    rpc editFileContent (editFileContentRequestObject) returns (File){}
+    rpc deleteResource (ResourceRequestObject) returns (Empty) {}
+    rpc trashResource (ResourceRequestObject) returns (ResourceObject) {}
+    rpc moveResource (MoveResourceRequestObject) returns (ResourceObject) {}
+}
+
+message Empty {}
+
+message User{
+    int64 user_id = 1;
+    string email = 2;
+    optional string password = 3;
+    optional string display_name = 4;
+    optional string error_code = 5;
+    int32 status_code = 6;
+    optional ErrorMessage error_message=7;
+}
+
+message CreateUserRequestObject{
+    string email = 1;
+    string password = 2;
+    string display_name = 3;
+}
+
+message LoginDetail{
+    string email = 1;
+    string password = 2;
+}
+
+message createResourceRequestObject{
+    int64 user_id = 1;
+    optional string resource_name = 2;
+    optional int32 resource_type = 3;
+    optional int64 parent_resource_id = 5;
+    optional string content = 6;
+    optional string content_type = 7;
+}
+message ErrorMessage {
+    string error_code = 1;
+    string error_message = 2;
+}
+
+message ResourceObject {
+    int32 status_code = 1;
+    optional Resource resource = 2;
+    optional ErrorMessage error_message = 3;
+}
+
+message Resource {
+    int64 resource_id = 1;
+    string resource_name = 2;
+    int32 resource_type = 3;
+    int64 parent_resource_id = 4;
+    int64 user_id = 5;
+    bool active_status = 6;
+    optional File file_details = 7;
+
+}
+
+message File{
+    int64 resource_id = 1;
+    int64 file_id=2;
+    int64 user_id=3;
+    string content = 4;
+    string content_type = 5;
+    optional int32 status_code = 6;
+    optional ErrorMessage error_message=7;
+}
+message editFileContentRequestObject{
+    int64 resource_id = 1;
+    string content = 2;
+    int64 user_id = 3;
+}
+
+message ResourceRequestObject{
+    int64 resource_id = 1;
+    int64 user_id = 2;
+}
+
+message getParentResourcesRequestObject{
+    int64 user_id = 1;
+    int64 parent_resource_id = 2;
+}
+
+message getUserResourceRequestObject{
+    int64 user_id = 1;
+}
+
+message editResourceRequestObject{
+    int64 user_id = 1;
+    int64 resource_id = 2;
+    string resource_name = 3;
+    int64 parent_resource_id = 4;
+    int32 resource_type = 5;
+}
+
+message MoveResourceRequestObject{
+    int64 user_id = 1;
+    int64 source_resource_id = 2;
+    int64 resource_id = 3;
+    int64 destination_resource_id = 4;
+}
+message ResourceList{
+    repeated Resource resources = 1;
+    int64 parent_resource_id = 2;
+    int32 status_code = 3;
+    optional Resource resource = 4;
+    optional ErrorMessage error_message=5;
+}
