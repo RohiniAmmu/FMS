@@ -83,7 +83,7 @@ function addResource(params, callbackFunction) {
         var parent_resource_id = -1;
         if(params.request.parent_resource_id){
             parent_resource_id = params.request.parent_resource_id;
-        }else if( params.request.resource_type == constants.RESOURCE_TYPE.FOLDER){
+        }else if( params.request.resource_type == constants.RESOURCE_TYPE.FOLDER || !params.request.parent_resource_id){
             parent_resource_id = constants.ROOT_RESOURCE_ID;
         }else{
             return;
